@@ -1,0 +1,428 @@
+using integ1;
+using integ1.Models.Domain;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
+namespace integ1.Controllers
+{
+	[ApiController]
+	[Route("api/[controller]")]
+	public class CategoryController : ControllerBase
+	{
+		private readonly ApplicationDbContext dbContext;
+
+		public CategoryController(ApplicationDbContext dbContext)
+		{
+			this.dbContext = dbContext;
+		}
+
+		[HttpGet]
+		public async Task<IActionResult> GetAllCategories()
+		{
+			var categories = await dbContext.Categories.ToListAsync();
+			return Ok(categories);
+		}
+
+		[HttpGet("{id}")]
+		public async Task<IActionResult> GetCategory(Guid id)
+		{
+			var category = await dbContext.Categories.FindAsync(id);
+
+			if (category == null)
+				return NotFound();
+
+			return Ok(category);
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> AddCategory(Category category)
+		{
+			category.CategoryId = Guid.NewGuid();
+
+			await dbContext.Categories.AddAsync(category);
+			await dbContext.SaveChangesAsync();
+
+			return CreatedAtAction(nameof(GetCategory),
+				new { id = category.CategoryId },
+				category);
+		}
+
+		[HttpPut("{id}")]
+		public async Task<IActionResult> UpdateCategory(Guid id, Category updatedCategory)
+		{
+			var category = await dbContext.Categories.FindAsync(id);
+
+			if (category == null)
+				return NotFound();
+
+			category.CategoryName = updatedCategory.CategoryName;
+			category.Description = updatedCategory.Description;
+
+			await dbContext.SaveChangesAsync();
+
+			return Ok(category);
+		}
+
+		[HttpDelete("{id}")]
+		public async Task<IActionResult> DeleteCategory(Guid id)
+		{
+			var category = await dbContext.Categories.FindAsync(id);
+
+			if (category == null)
+				return NotFound();
+
+			dbContext.Categories.Remove(category);
+			await dbContext.SaveChangesAsync();
+
+			return Ok(category);
+		}
+	}
+}
+
+using integ1;
+using integ1.Models;
+using integ1.Models.Domain;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
+namespace integ1.Controllers
+{
+	[ApiController]
+	[Route("api/[controller]")]
+	public class ProductController : ControllerBase
+	{
+		private readonly ApplicationDbContext dbContext;
+
+		public ProductController(ApplicationDbContext dbContext)
+		{
+			this.dbContext = dbContext;
+		}
+
+	
+		[HttpGet]
+		public async Task<IActionResult> GetAllProducts()
+		{
+			var products = await dbContext.Products.ToListAsync();
+			return Ok(products);
+		}
+
+		
+		[HttpGet("{id}")]
+		public async Task<IActionResult> GetProduct(Guid id)
+		{
+			var product = await dbContext.Products.FindAsync(id);
+
+			if (product == null)
+				return NotFound();
+
+			return Ok(product);
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> AddProduct(Product product)
+		{
+			product.ProductId = Guid.NewGuid();
+
+			await dbContext.Products.AddAsync(product);
+			await dbContext.SaveChangesAsync();
+
+			return CreatedAtAction(nameof(GetProduct),
+				new { id = product.ProductId },
+				product);
+		}
+
+	
+		[HttpPut("{id}")]
+		public async Task<IActionResult> UpdateProduct(Guid id, Product updatedProduct)
+		{
+			if (id != updatedProduct.ProductId)
+				return BadRequest("Product ID mismatch");
+
+			var product = await dbContext.Products.FindAsync(id);
+
+			if (product == null)
+				return NotFound();
+
+			await dbContext.SaveChangesAsync();
+
+			return Ok(product);
+		}
+
+	
+		[HttpDelete("{id}")]
+		public async Task<IActionResult> DeleteProduct(Guid id)
+		{
+			var product = await dbContext.Products.FindAsync(id);
+
+			if (product == null)
+				return NotFound();
+
+			dbContext.Products.Remove(product);
+			await dbContext.SaveChangesAsync();
+
+			return Ok(product);
+		}
+	}
+}
+
+using integ1;
+using integ1.Models.Domain;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
+namespace integ1.Controllers
+{
+	[ApiController]
+	[Route("api/[controller]")]
+	public class SupplierController : ControllerBase
+	{
+        private ApplicationDbContext dbContext;
+
+        public SupplierController(ApplicationDbContext dbContext)
+		{
+			this.dbContext = dbContext;
+		}
+
+		
+		[HttpGet]
+		public async Task<IActionResult> GetAllSuppliers()
+		{
+			var suppliers = ""; //= await dbContext.Suppliers
+			return Ok(suppliers);
+		}
+
+	
+		[HttpGet("{id}")]
+		public async Task<IActionResult> GetSupplier(Guid id)
+		{
+			var supplier = ""; //= await dbContext.Suppliers.FindAsync(id);
+
+			if (supplier == null)
+				return NotFound();
+
+			return Ok(supplier);
+		}
+
+	
+		[HttpPost]
+		public async Task<IActionResult> AddSupplier(Supplier supplier)
+		{
+			supplier.SupplierId = Guid.NewGuid();
+
+			//dbContext.Suppliers.Add(supplier);  
+			await dbContext.SaveChangesAsync();
+
+			return CreatedAtAction(nameof(GetSupplier),
+				new { id = supplier.SupplierId },
+				supplier);
+		}
+
+		
+		[HttpPut("{id}")]
+		public async Task<IActionResult> UpdateSupplier(Guid id, Supplier updatedSupplier)
+		{
+			if (id != updatedSupplier.SupplierId)
+				return BadRequest("Supplier ID mismatch");
+
+			var supplier = ""; // await dbContext.Suppliers.FindAsync(id);
+
+			if (supplier == null)
+				return NotFound();
+
+			//supplier.SupplierName = updatedSupplier.SupplierName;
+			//supplier.Address = updatedSupplier.Address;
+			//supplier.ContactNumber = updatedSupplier.ContactNumber;
+
+			await dbContext.SaveChangesAsync();
+
+			return Ok(supplier);
+		}
+
+		[HttpDelete("{id}")]
+		public async Task<IActionResult> DeleteSupplier(Guid id)
+		{
+			var supplier = ""; // await dbContext.Suppliers.FindAsync(id);
+
+			if (supplier == null)
+				return NotFound();
+
+			//dbContext.Suppliers.Remove(supplier);
+			await dbContext.SaveChangesAsync();
+
+			return Ok(supplier);
+		}
+	}
+}
+
+using integ1;
+using integ1.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
+namespace integ1.Controllers
+{
+	[ApiController]
+	[Route("api/[controller]")]
+	public class TransactionController : ControllerBase
+	{
+		private readonly ApplicationDbContext dbContext;
+
+		public TransactionController(ApplicationDbContext dbContext)
+		{
+			this.dbContext = dbContext;
+		}
+
+	
+		[HttpGet]
+		public async Task<IActionResult> GetAllTransactions()
+		{
+			var transactions = await dbContext.Transactions.ToListAsync();
+			return Ok(transactions);
+		}
+
+	
+		[HttpGet("{id}")]
+		public async Task<IActionResult> GetTransaction(Guid id)
+		{
+			var transaction = await dbContext.Transactions.FindAsync(id);
+
+			if (transaction == null)
+				return NotFound();
+
+			return Ok(transaction);
+		}
+
+
+		[HttpPost]
+		public async Task<IActionResult> AddTransaction(Transaction transaction)
+		{
+			transaction.SupplierId = Guid.NewGuid();
+			await dbContext.SaveChangesAsync();
+
+			return CreatedAtAction(nameof(GetTransaction),
+				new { id = transaction.SupplierId },
+				transaction);
+		}
+
+	
+		[HttpPut("{id}")]
+
+		public async Task<IActionResult> UpdateTransaction(Guid id, Transaction updatedTransaction)
+		{
+			if (id != updatedTransaction.SupplierId)
+				return BadRequest("Transaction ID mismatch");
+
+			var transaction = await dbContext.Transactions.FindAsync(id);
+
+			if (transaction == null)
+				return NotFound();
+
+
+			await dbContext.SaveChangesAsync();
+
+			return Ok(transaction);
+		}
+
+		[HttpDelete("{id}")]
+		public async Task<IActionResult> DeleteTransaction(Guid id)
+		{
+			var transaction = await dbContext.Transactions.FindAsync(id);
+
+			if (transaction == null)
+				return NotFound();
+
+			dbContext.Transactions.Remove(transaction);
+			await dbContext.SaveChangesAsync();
+
+			return Ok(transaction);
+		}
+	}
+}
+
+using integ1;
+using integ1.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
+namespace integ1.Controllers
+{
+	[ApiController]
+	[Route("api/[controller]")]
+	public class TransactionController : ControllerBase
+	{
+		private readonly ApplicationDbContext dbContext;
+
+		public TransactionController(ApplicationDbContext dbContext)
+		{
+			this.dbContext = dbContext;
+		}
+
+	
+		[HttpGet]
+		public async Task<IActionResult> GetAllTransactions()
+		{
+			var transactions = await dbContext.Transactions.ToListAsync();
+			return Ok(transactions);
+		}
+
+	
+		[HttpGet("{id}")]
+		public async Task<IActionResult> GetTransaction(Guid id)
+		{
+			var transaction = await dbContext.Transactions.FindAsync(id);
+
+			if (transaction == null)
+				return NotFound();
+
+			return Ok(transaction);
+		}
+
+
+		[HttpPost]
+		public async Task<IActionResult> AddTransaction(Transaction transaction)
+		{
+			transaction.SupplierId = Guid.NewGuid();
+			await dbContext.SaveChangesAsync();
+
+			return CreatedAtAction(nameof(GetTransaction),
+				new { id = transaction.SupplierId },
+				transaction);
+		}
+
+	
+		[HttpPut("{id}")]
+
+		public async Task<IActionResult> UpdateTransaction(Guid id, Transaction updatedTransaction)
+		{
+			if (id != updatedTransaction.SupplierId)
+				return BadRequest("Transaction ID mismatch");
+
+			var transaction = await dbContext.Transactions.FindAsync(id);
+
+			if (transaction == null)
+				return NotFound();
+
+
+			await dbContext.SaveChangesAsync();
+
+			return Ok(transaction);
+		}
+
+		[HttpDelete("{id}")]
+		public async Task<IActionResult> DeleteTransaction(Guid id)
+		{
+			var transaction = await dbContext.Transactions.FindAsync(id);
+
+			if (transaction == null)
+				return NotFound();
+
+			dbContext.Transactions.Remove(transaction);
+			await dbContext.SaveChangesAsync();
+
+			return Ok(transaction);
+		}
+	}
+}
+
+
+
